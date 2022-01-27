@@ -12,12 +12,17 @@
 #include "pico_uart_transports.h"
 
 // DEBUG VALUES
-#define CONNECTED 0
-#define RUNNING 1
+#define CONNECTED 69
+#define RUNNING 420
+
+#define A_ON_B_OFF  0b10
+#define A_OFF_B_ON  0b01
+#define A_ON_B_ON   0b11
+#define A_OFF_B_OFF 0b00
 
 
-#define ENCODER_PIN_A 12
-#define ENCODER_PIN_B 13
+#define ENCODER_PIN_A 10
+#define ENCODER_PIN_B 11
 #define LED_PIN 25
 
 
@@ -36,12 +41,12 @@ std_msgs__msg__Int32 encoder_msg;
 std_msgs__msg__Int32 debug_msg;
 
 
-bool led_value = false;
-void my_timer_callback(rcl_timer_t *timer, int64_t last_call_time)
-{
-    gpio_put(LED_PIN, led_value);
-    led_value = not led_value;
-}
+// bool led_value = false;
+// void my_timer_callback(rcl_timer_t *timer, int64_t last_call_time)
+// {
+//     gpio_put(LED_PIN, led_value);
+//     led_value = not led_value;
+// }
 
 void subscription_callback(const void * msgin)
 // `/cmd_vel` callback
@@ -117,18 +122,18 @@ int main()
     );
 
     // TIMER
-    rclc_timer_init_default(
-        &timer,
-        &support,
-        RCL_MS_TO_NS(1000),
-        my_timer_callback);
+    // rclc_timer_init_default(
+    //     &timer,
+    //     &support,
+    //     RCL_MS_TO_NS(1000),
+    //     my_timer_callback);
 
     rclc_executor_init(&executor, &support.context, 1, &allocator);
     rc = rclc_executor_add_subscription(
         &executor, &subscriber, &command,
         &subscription_callback, ON_NEW_DATA
     );
-    rclc_executor_add_timer(&executor, &timer);
+    // rclc_executor_add_timer(&executor, &timer);
 
     gpio_put(LED_PIN, 1);
     
@@ -141,25 +146,31 @@ int main()
     /* -------- ENCODER SETUP ------------- */
 
     gpio_init(ENCODER_PIN_A);
-    gpio_set_dir(ENCODER_PIN_A, GPIO_OUT);
+    gpio_set_dir(ENCODER_PIN_A, GPIO_IN);
+
     bool last_encoder_A = gpio_get(ENCODER_PIN_A);
 
-
     gpio_init(ENCODER_PIN_B);
-    gpio_set_dir(ENCODER_PIN_B, GPIO_OUT);
+    gpio_set_dir(ENCODER_PIN_B, GPIO_IN);
 
-    bool encoderA;
-    bool encoderB;
-    unsigned int encoder_pulses;
+    int encoderA;
+    int encoderB;
+    int encoder_pulses = 0;
 
     while (true)
     {
-        debug_msg.data = RUNNING;
-        rcl_publish(&debug_publisher, &debug_msg, NULL);
+        // debug_msg.data = RUNNING;
+        // rcl_publish(&debug_publisher, &debug_msg, NULL);
 
-        rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
+        // rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
+
         encoderA = gpio_get(ENCODER_PIN_A);
         encoderB = gpio_get(ENCODER_PIN_B);
+
+        // debug_msg.data = (encoderA << 1) | encoderB;
+        // debug_msg.data = encoderB;
+
+        // rcl_publish(&debug_publisher, &debug_msg, NULL);
 
         if(encoderA and !last_encoder_A)
         {
