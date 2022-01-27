@@ -21,8 +21,8 @@
 #define A_OFF_B_OFF 0b00
 
 
-#define ENCODER_PIN_A 10
-#define ENCODER_PIN_B 11
+#define PIN_ENCODER_LEFT_A 10
+#define PIN_ENCODER_LEFT_B 11
 #define LED_PIN 25
 
 
@@ -145,17 +145,17 @@ int main()
 
     /* -------- ENCODER SETUP ------------- */
 
-    gpio_init(ENCODER_PIN_A);
-    gpio_set_dir(ENCODER_PIN_A, GPIO_IN);
+    gpio_init(PIN_ENCODER_LEFT_A);
+    gpio_set_dir(PIN_ENCODER_LEFT_A, GPIO_IN);
 
-    bool last_encoder_A = gpio_get(ENCODER_PIN_A);
+    bool last_encoder_left_A = gpio_get(PIN_ENCODER_LEFT_A);
 
-    gpio_init(ENCODER_PIN_B);
-    gpio_set_dir(ENCODER_PIN_B, GPIO_IN);
+    gpio_init(PIN_ENCODER_LEFT_B);
+    gpio_set_dir(PIN_ENCODER_LEFT_B, GPIO_IN);
 
-    int encoderA;
-    int encoderB;
-    int encoder_pulses = 0;
+    int encoder_left_A;
+    int encoder_left_B;
+    int encoder_left_pulses = 0;
 
     while (true)
     {
@@ -164,28 +164,28 @@ int main()
 
         // rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
 
-        encoderA = gpio_get(ENCODER_PIN_A);
-        encoderB = gpio_get(ENCODER_PIN_B);
+        encoder_left_A = gpio_get(PIN_ENCODER_LEFT_A);
+        encoder_left_B = gpio_get(PIN_ENCODER_LEFT_B);
 
-        // debug_msg.data = (encoderA << 1) | encoderB;
-        // debug_msg.data = encoderB;
+        // debug_msg.data = (encoder_left_A << 1) | encoder_left_B;
+        // debug_msg.data = encoder_left_B;
 
         // rcl_publish(&debug_publisher, &debug_msg, NULL);
 
-        if(encoderA and !last_encoder_A)
+        if(encoder_left_A and !last_encoder_left_A)
         {
-            if(encoderB)
-                encoder_pulses++;
+            if(encoder_left_B)
+                encoder_left_pulses++;
             else
-                encoder_pulses--;
+                encoder_left_pulses--;
             
             // Serial.print("Num. pulses: ");
-            // Serial.println(encoder_pulses);
-            encoder_msg.data = encoder_pulses;
+            // Serial.println(encoder_left_pulses);
+            encoder_msg.data = encoder_left_pulses;
             rcl_publish(&encoder_publisher, &encoder_msg, NULL);
         }
 
-        last_encoder_A = encoderA;
+        last_encoder_left_A = encoder_left_A;
     }
 
     return 0;
