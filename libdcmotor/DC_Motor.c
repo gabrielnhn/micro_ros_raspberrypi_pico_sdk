@@ -26,14 +26,14 @@ void forward_DC_Motor(DC_Motor *motor, uint16_t speed)
 {
     gpio_put(motor->clockwise_pin, 1);
     gpio_put(motor->counterclockwise_pin, 0);
-    pwm_set_gpio_level(motor->pwm_pin, speed <= MAX_CYCLES ? speed : MAX_CYCLES);
+    pwm_set_gpio_level(motor->pwm_pin, speed <= MAX_CYCLES  - 1 ? speed : MAX_CYCLES - 1);
 }
 
 void backwards_DC_Motor(DC_Motor *motor, uint16_t speed)
 {
     gpio_put(motor->clockwise_pin, 0);
     gpio_put(motor->counterclockwise_pin, 1);
-    pwm_set_gpio_level(motor->pwm_pin, speed <= MAX_CYCLES ? speed : MAX_CYCLES);
+    pwm_set_gpio_level(motor->pwm_pin, speed <= MAX_CYCLES  - 1 ? speed : MAX_CYCLES - 1);
 }
 
 void stop_DC_Motor(DC_Motor *motor)
