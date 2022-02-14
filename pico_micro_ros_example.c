@@ -10,6 +10,7 @@
 #include <rmw_microros/rmw_microros.h>
 #include "pico/stdlib.h"
 #include "pico_uart_transports.h"
+#include "libdcmotor/DC_Motor.h"
 
 // DEBUG VALUES
 #define CONNECTED 69

@@ -13,9 +13,12 @@ link_directories(libmicroros)
 add_executable(pico_micro_ros_example
     pico_micro_ros_example.c
     pico_uart_transport.c
+    libdcmotor/DC_Motor.h
+    libdcmotor/DC_Motor.c
 )
 target_link_libraries(pico_micro_ros_example
     pico_stdlib
+    hardware_pwm
     microros
 )
 
