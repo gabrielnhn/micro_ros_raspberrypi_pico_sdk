@@ -49,6 +49,8 @@ std_msgs__msg__Int32 debug_msg;
 //     led_value = not led_value;
 // }
 
+int count_encoder_pulses(int32_t* encoder_left_pulses, int32_t* encoder_right_pulses);
+
 void subscription_callback(const void * msgin)
 // `/cmd_vel` callback
 {
@@ -148,46 +150,75 @@ int main()
 
     gpio_init(PIN_ENCODER_LEFT_A);
     gpio_set_dir(PIN_ENCODER_LEFT_A, GPIO_IN);
-
-    bool last_encoder_left_A = gpio_get(PIN_ENCODER_LEFT_A);
+    int32_t encoder_left_pulses = 0;
+    int32_t encoder_right_pulses = 0;
 
     gpio_init(PIN_ENCODER_LEFT_B);
     gpio_set_dir(PIN_ENCODER_LEFT_B, GPIO_IN);
 
-    int encoder_left_A;
-    int encoder_left_B;
-    int encoder_left_pulses = 0;
-
+    int old_pulses = 0;
     while (true)
     {
-        // debug_msg.data = RUNNING;
-        // rcl_publish(&debug_publisher, &debug_msg, NULL);
-
-        // rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
-
-        encoder_left_A = gpio_get(PIN_ENCODER_LEFT_A);
-        encoder_left_B = gpio_get(PIN_ENCODER_LEFT_B);
-
-        // debug_msg.data = (encoder_left_A << 1) | encoder_left_B;
-        // debug_msg.data = encoder_left_B;
-
-        // rcl_publish(&debug_publisher, &debug_msg, NULL);
-
-        if(encoder_left_A and !last_encoder_left_A)
+        old_pulses = encoder_left_pulses;
+        count_encoder_pulses(&encoder_left_pulses, &encoder_right_pulses);
+        if (old_pulses != encoder_left_pulses)
         {
-            if(encoder_left_B)
-                encoder_left_pulses++;
-            else
-                encoder_left_pulses--;
-            
-            // Serial.print("Num. pulses: ");
-            // Serial.println(encoder_left_pulses);
             encoder_msg.data = encoder_left_pulses;
             rcl_publish(&encoder_publisher, &encoder_msg, NULL);
         }
-
-        last_encoder_left_A = encoder_left_A;
     }
 
     return 0;
+}
+
+
+int count_encoder_pulses(int32_t* encoder_left_pulses, int32_t* encoder_right_pulses)
+{
+    static int encoder_left_A;
+    static int encoder_left_B;
+
+    static int encoder_right_A;
+    static int encoder_right_B;
+
+    encoder_left_A = gpio_get(PIN_ENCODER_LEFT_A);
+    encoder_left_B = gpio_get(PIN_ENCODER_LEFT_B);
+
+    // encoder_right_A = gpio_get(PIN_ENCODER_RIGHT_A);
+    // encoder_right_B = gpio_get(PIN_ENCODER_RIGHT_B);
+
+    static bool last_encoder_left_A = false;
+    // last_encoder_left_A = gpio_get(PIN_ENCODER_LEFT_A);
+
+    // static bool last_encoder_right_A = gpio_get(PIN_ENCODER_RIGHT_A);
+
+
+    if(encoder_left_A and !last_encoder_left_A)
+    {
+        if(encoder_left_B)
+            (*encoder_left_pulses)++;
+        else
+            (*encoder_left_pulses)--;
+        
+        // Serial.print("Num. pulses: ");
+        // Serial.println(encoder_left_pulses);
+        // encoder_msg.data = encoder_left_pulses;
+        // rcl_publish(&encoder_publisher, &encoder_msg, NULL);
+    }
+
+    // if(encoder_right_A and !last_encoder_right_A)
+    // {
+    //     if(encoder_right_B)
+    //         (*encoder_right_pulses)++;
+    //     else
+    //         (*encoder_right_pulses)--;
+         
+    //     // Serial.print("Num. pulses: ");
+    //     // Serial.println(encoder_right_pulses);
+    //     encoder_msg.data = encoder_right_pulses;
+    //     rcl_publish(&encoder_publisher, &encoder_msg, NULL);
+    // }
+
+    last_encoder_left_A = encoder_left_A;
+    // last_encoder_right_A = encoder_right_A;
+
 }
