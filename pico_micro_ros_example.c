@@ -58,93 +58,93 @@ void subscription_callback(const void * msgin)
 // `/cmd_vel` callback
 {
     // Cast received message to used type
-    // geometry_msgs__msg__Twist * msg = (geometry_msgs__msg__Twist *) msgin;
+    geometry_msgs__msg__Twist * msg = (geometry_msgs__msg__Twist *) msgin;
 
-    // command = *msg;
+    command = *msg;
     // rcl_ret_t ret = rcl_publish(&publisher, &command, NULL);
 }
 
 int main()
 {
-    // // micro-ROS connection setup
-    // rmw_uros_set_custom_transport(
-	// 	true,
-	// 	NULL,
-	// 	pico_serial_transport_open,
-	// 	pico_serial_transport_close,
-	// 	pico_serial_transport_write,
-	// 	pico_serial_transport_read
-	// );
+    // micro-ROS connection setup
+    rmw_uros_set_custom_transport(
+		true,
+		NULL,
+		pico_serial_transport_open,
+		pico_serial_transport_close,
+		pico_serial_transport_write,
+		pico_serial_transport_read
+	);
 
     // set up LED GPIO
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
 
-    // /* -------- ROS INIT --------- */
+    /* -------- ROS INIT --------- */
 
-    // // ROS memory allocator
-    // allocator = rcl_get_default_allocator();
+    // ROS memory allocator
+    allocator = rcl_get_default_allocator();
 
-    // // Wait for micro-ROS agent successful ping for 2 minutes.
-    // const int timeout_ms = 1000; 
-    // const uint8_t attempts = 120;
-    // rcl_ret_t ret = rmw_uros_ping_agent(timeout_ms, attempts);
-    // if (ret != RCL_RET_OK)
-    // {
-    //     // Unreachable agent, exiting program.
-    //     return ret;
-    // }
+    // Wait for micro-ROS agent successful ping for 2 minutes.
+    const int timeout_ms = 1000; 
+    const uint8_t attempts = 120;
+    rcl_ret_t ret = rmw_uros_ping_agent(timeout_ms, attempts);
+    if (ret != RCL_RET_OK)
+    {
+        // Unreachable agent, exiting program.
+        return ret;
+    }
 
-    // // Init ROS support structures
-    // rclc_support_init(&support, 0, NULL, &allocator);
+    // Init ROS support structures
+    rclc_support_init(&support, 0, NULL, &allocator);
 
-    // rclc_node_init_default(&node, "pico_node", "", &support);
+    rclc_node_init_default(&node, "pico_node", "", &support);
 
-    // // PUBLISHERS
-
-    // // rclc_publisher_init_default(
-    // //     &publisher,
-    // //     &node,
-    // //     ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist),
-    // //     "pico_publisher"
-    // // );
+    // PUBLISHERS
 
     // rclc_publisher_init_default(
-    //     &debug_publisher,
+    //     &publisher,
     //     &node,
-    //     ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-    //     "pico_debug");
-
-    // rclc_publisher_init_default(
-    //     &encoder_publisher,
-    //     &node,
-    //     ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-    //     "encoder_position");
-
-    // // SUBSCRIPTION
-    // rcl_ret_t rc = rclc_subscription_init_default(
-    //     &subscriber, &node,
-    //     ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist), "cmd_vel"
+    //     ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist),
+    //     "pico_publisher"
     // );
 
-    // // TIMER
-    // // rclc_timer_init_default(
-    // //     &timer,
-    // //     &support,
-    // //     RCL_MS_TO_NS(1000),
-    // //     my_timer_callback);
+    rclc_publisher_init_default(
+        &debug_publisher,
+        &node,
+        ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
+        "pico_debug");
 
-    // rclc_executor_init(&executor, &support.context, 1, &allocator);
-    // rc = rclc_executor_add_subscription(
-    //     &executor, &subscriber, &command,
-    //     &subscription_callback, ON_NEW_DATA
-    // );
-    // // rclc_executor_add_timer(&executor, &timer);
+    rclc_publisher_init_default(
+        &encoder_publisher,
+        &node,
+        ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
+        "encoder_position");
+
+    // SUBSCRIPTION
+    rcl_ret_t rc = rclc_subscription_init_default(
+        &subscriber, &node,
+        ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist), "cmd_vel"
+    );
+
+    // TIMER
+    // rclc_timer_init_default(
+    //     &timer,
+    //     &support,
+    //     RCL_MS_TO_NS(1000),
+    //     my_timer_callback);
+
+    rclc_executor_init(&executor, &support.context, 1, &allocator);
+    rc = rclc_executor_add_subscription(
+        &executor, &subscriber, &command,
+        &subscription_callback, ON_NEW_DATA
+    );
+    rclc_executor_add_timer(&executor, &timer);
 
     gpio_put(LED_PIN, 1);
     
-    // debug_msg.data = CONNECTED;
-    // rcl_publish(&debug_publisher, &debug_msg, NULL);
+    debug_msg.data = CONNECTED;
+    rcl_publish(&debug_publisher, &debug_msg, NULL);
 
 
     /* -------- ROS INIT FINISHED --------- */
@@ -154,46 +154,48 @@ int main()
     init_DC_Motor(&right_motor, 6, 7, 8);
 
     /* -------- MOTOR TEST ------------- */
-    while(1)
-    {
-        forward_DC_Motor(&left_motor, 100);
-        forward_DC_Motor(&right_motor, 100);
-        sleep_ms(3000);
+    // while(1)
+    // {
+    //     forward_DC_Motor(&left_motor, 100);
+    //     forward_DC_Motor(&right_motor, 100);
+    //     sleep_ms(3000);
 
-        stop_DC_Motor(&left_motor);
-        stop_DC_Motor(&right_motor);
-        sleep_ms(1000);
+    //     stop_DC_Motor(&left_motor);
+    //     stop_DC_Motor(&right_motor);
+    //     sleep_ms(1000);
 
-        backwards_DC_Motor(&left_motor, 100);
-        backwards_DC_Motor(&right_motor, 100);
-        sleep_ms(3000);
+    //     backwards_DC_Motor(&left_motor, 100);
+    //     backwards_DC_Motor(&right_motor, 100);
+    //     sleep_ms(3000);
 
-        stop_DC_Motor(&left_motor);
-        stop_DC_Motor(&right_motor);
-        sleep_ms(1000);
-    }
+    //     stop_DC_Motor(&left_motor);
+    //     stop_DC_Motor(&right_motor);
+    //     sleep_ms(1000);
+    // }
 
     /* -------- ENCODER SETUP ------------- */
 
-    // gpio_init(PIN_ENCODER_LEFT_A);
-    // gpio_set_dir(PIN_ENCODER_LEFT_A, GPIO_IN);
-    // int32_t encoder_left_pulses = 0;
-    // int32_t encoder_right_pulses = 0;
+    gpio_init(PIN_ENCODER_LEFT_A);
+    gpio_set_dir(PIN_ENCODER_LEFT_A, GPIO_IN);
+    int32_t encoder_left_pulses = 0;
+    int32_t encoder_right_pulses = 0;
 
-    // gpio_init(PIN_ENCODER_LEFT_B);
-    // gpio_set_dir(PIN_ENCODER_LEFT_B, GPIO_IN);
+    gpio_init(PIN_ENCODER_LEFT_B);
+    gpio_set_dir(PIN_ENCODER_LEFT_B, GPIO_IN);
 
-    // int old_pulses = 0;
-    // while (true)
-    // {
-    //     old_pulses = encoder_left_pulses;
-    //     count_encoder_pulses(&encoder_left_pulses, &encoder_right_pulses);
-    //     if (old_pulses != encoder_left_pulses)
-    //     {
-    //         encoder_msg.data = encoder_left_pulses;
-    //         rcl_publish(&encoder_publisher, &encoder_msg, NULL);
-    //     }
-    // }
+    int old_pulses = 0;
+    while (true)
+    {
+        old_pulses = encoder_left_pulses;
+        count_encoder_pulses(&encoder_left_pulses, &encoder_right_pulses);
+        if (old_pulses != encoder_left_pulses)
+        {
+            encoder_msg.data = encoder_left_pulses;
+            rcl_publish(&encoder_publisher, &encoder_msg, NULL);
+        }
+        forward_DC_Motor(&left_motor, command.linear.x * 100);
+        forward_DC_Motor(&right_motor, command.linear.x * 100);
+    }
 
     return 0;
 }

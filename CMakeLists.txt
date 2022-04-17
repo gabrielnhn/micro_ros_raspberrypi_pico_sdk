@@ -16,9 +16,12 @@ link_directories(libmicroros)
 add_executable(${project_name}
     ${project_file}
     pico_uart_transport.c
+    libdcmotor/DC_Motor.h
+    libdcmotor/DC_Motor.c
 )
 target_link_libraries(${project_name}
     pico_stdlib
+    hardware_pwm
     microros
 )
 
