@@ -62,7 +62,7 @@ void subscription_callback(const void * msgin)
 
     command = *msg;
 
-    debug_msg.data = command.linear.x * 100;
+    debug_msg.data = command.linear.x * 300;
     rcl_publish(&debug_publisher, &debug_msg, NULL);
     
     // rcl_ret_t ret = rcl_publish(&publisher, &command, NULL);
@@ -168,16 +168,16 @@ int main()
     /* -------- MOTOR TEST ------------- */
     // while(1)
     // {
-    //     forward_DC_Motor(&left_motor, 100);
-    //     forward_DC_Motor(&right_motor, 100);
+    //     forward_DC_Motor(&left_motor, 78);
+    //     forward_DC_Motor(&right_motor, 78);
     //     sleep_ms(3000);
 
     //     stop_DC_Motor(&left_motor);
     //     stop_DC_Motor(&right_motor);
     //     sleep_ms(1000);
 
-    //     backwards_DC_Motor(&left_motor, 100);
-    //     backwards_DC_Motor(&right_motor, 100);
+    //     backwards_DC_Motor(&left_motor, 78);
+    //     backwards_DC_Motor(&right_motor, 78);
     //     sleep_ms(3000);
 
     //     stop_DC_Motor(&left_motor);
@@ -209,8 +209,8 @@ int main()
             encoder_msg.data = encoder_left_pulses;
             rcl_publish(&encoder_publisher, &encoder_msg, NULL);
         }
-        forward_DC_Motor(&left_motor, command.linear.x * 100);
-        forward_DC_Motor(&right_motor, command.linear.x * 100);
+        forward_DC_Motor(&left_motor, command.linear.x * 300);
+        forward_DC_Motor(&right_motor, command.linear.x * 300);
     }
 
     return 0;
