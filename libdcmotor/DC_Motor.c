@@ -25,14 +25,14 @@ void init_DC_Motor(DC_Motor *motor, uint8_t clockwise_pin,
 void run_DC_Motor(DC_Motor *motor, int speed)
 {
     if (speed > 0)
-    {
         forward_DC_Motor(motor, speed);
-    }
 
     else if (speed < 0)
-    {
         backwards_DC_Motor(motor, -speed);
-    }
+
+    else
+        stop_DC_Motor(motor);
+
 }
 
 void forward_DC_Motor(DC_Motor *motor, uint16_t speed)
