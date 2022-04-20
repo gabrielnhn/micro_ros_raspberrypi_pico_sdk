@@ -26,7 +26,7 @@
 #define PIN_ENCODER_LEFT_B 12
 #define LED_PIN 25
 
-#define LINEAR_PROPORTION 300
+#define LINEAR_PROPORTION 400
 #define ANGULAR_PROPORTION 100
 
 
@@ -212,11 +212,11 @@ int main()
             encoder_msg.data = encoder_left_pulses;
             rcl_publish(&encoder_publisher, &encoder_msg, NULL);
         }
-        // run_DC_Motor(&left_motor, command.linear.x * LINEAR_PROPORTION - command.angular.z * ANGULAR_PROPORTION);
-        // run_DC_Motor(&right_motor, command.linear.x * LINEAR_PROPORTION + command.angular.z * ANGULAR_PROPORTION);
+        run_DC_Motor(&left_motor, command.linear.x * LINEAR_PROPORTION - command.angular.z * ANGULAR_PROPORTION);
+        run_DC_Motor(&right_motor, command.linear.x * LINEAR_PROPORTION + command.angular.z * ANGULAR_PROPORTION);
 
-        run_DC_Motor(&left_motor, command.linear.x * LINEAR_PROPORTION);
-        run_DC_Motor(&right_motor, command.linear.x * LINEAR_PROPORTION);
+        // run_DC_Motor(&left_motor, command.linear.x * LINEAR_PROPORTION);
+        // run_DC_Motor(&right_motor, command.linear.x * LINEAR_PROPORTION);
     
     }
 
