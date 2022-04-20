@@ -41,6 +41,15 @@ void forward_DC_Motor(DC_Motor *motor, uint16_t speed);
 */
 void backwards_DC_Motor(DC_Motor *motor, uint16_t speed);
 
+
+/*!
+    @brief  Run motor according to the absolute value of the speed
+
+    @param  motor   Motor's reference
+*/
+void run_DC_MOTOR(DC_Motor *motor, int speed);
+
+
 /*!
     @brief  Stop a motor
 

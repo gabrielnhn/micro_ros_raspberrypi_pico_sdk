@@ -22,6 +22,19 @@ void init_DC_Motor(DC_Motor *motor, uint8_t clockwise_pin,
     pwm_set_enabled(slice_num, 1);                          // Enable PWM
 }
 
+void run_DC_MOTOR(DC_Motor *motor, int speed)
+{
+    if (speed > 0)
+    {
+        forward_DC_Motor(motor, speed);
+    }
+
+    else if (speed < 0)
+    {
+        backwards_DC_Motor(motor, -speed);
+    }
+}
+
 void forward_DC_Motor(DC_Motor *motor, uint16_t speed)
 {
     gpio_put(motor->clockwise_pin, 1);
