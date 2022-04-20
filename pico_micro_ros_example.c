@@ -22,8 +22,8 @@
 #define A_OFF_B_OFF 0b00
 
 
-#define PIN_ENCODER_LEFT_A 10
-#define PIN_ENCODER_LEFT_B 11
+#define PIN_ENCODER_LEFT_A 13
+#define PIN_ENCODER_LEFT_B 12
 #define LED_PIN 25
 
 
@@ -186,6 +186,9 @@ int main()
     int old_pulses = 0;
     while (true)
     {
+        // debug_msg.data = RUNNING;
+        // rcl_publish(&debug_publisher, &debug_msg, NULL);
+
         old_pulses = encoder_left_pulses;
         count_encoder_pulses(&encoder_left_pulses, &encoder_right_pulses);
         if (old_pulses != encoder_left_pulses)
