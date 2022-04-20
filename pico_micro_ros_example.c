@@ -26,6 +26,9 @@
 #define PIN_ENCODER_LEFT_B 12
 #define LED_PIN 25
 
+#define LINEAR_PROPORTION 300
+#define ANGULAR_PROPORTION 100
+
 
 // ROS globals
 rcl_node_t node;
@@ -62,8 +65,8 @@ void subscription_callback(const void * msgin)
 
     command = *msg;
 
-    debug_msg.data = command.linear.x * 300;
-    rcl_publish(&debug_publisher, &debug_msg, NULL);
+    // debug_msg.data = command.linear.x * ;
+    // rcl_publish(&debug_publisher, &debug_msg, NULL);
     
     // rcl_ret_t ret = rcl_publish(&publisher, &command, NULL);
 }
@@ -209,8 +212,12 @@ int main()
             encoder_msg.data = encoder_left_pulses;
             rcl_publish(&encoder_publisher, &encoder_msg, NULL);
         }
-        run_DC_Motor(&left_motor, command.linear.x * 300);
-        run_DC_Motor(&right_motor, command.linear.x * 300);
+        // run_DC_Motor(&left_motor, command.linear.x * LINEAR_PROPORTION - command.angular.z * ANGULAR_PROPORTION);
+        // run_DC_Motor(&right_motor, command.linear.x * LINEAR_PROPORTION + command.angular.z * ANGULAR_PROPORTION);
+
+        run_DC_Motor(&left_motor, command.linear.x * LINEAR_PROPORTION);
+        run_DC_Motor(&right_motor, command.linear.x * LINEAR_PROPORTION);
+    
     }
 
     return 0;
