@@ -61,6 +61,10 @@ void subscription_callback(const void * msgin)
     geometry_msgs__msg__Twist * msg = (geometry_msgs__msg__Twist *) msgin;
 
     command = *msg;
+
+    debug_msg.data = command.linear.x * 100;
+    rcl_publish(&debug_publisher, &debug_msg, NULL);
+    
     // rcl_ret_t ret = rcl_publish(&publisher, &command, NULL);
 }
 
@@ -121,11 +125,6 @@ int main()
         ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
         "encoder_position");
 
-    // SUBSCRIPTION
-    rcl_ret_t rc = rclc_subscription_init_default(
-        &subscriber, &node,
-        ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist), "cmd_vel"
-    );
 
     // TIMER
     // rclc_timer_init_default(
@@ -134,17 +133,30 @@ int main()
     //     RCL_MS_TO_NS(1000),
     //     my_timer_callback);
 
+    // SUBSCRIPTIONS:
+
     rclc_executor_init(&executor, &support.context, 1, &allocator);
+
+    rcl_ret_t rc = rclc_subscription_init_default(
+        &subscriber, &node,
+        ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist), "cmd_vel"
+    );
+
     rc = rclc_executor_add_subscription(
         &executor, &subscriber, &command,
-        &subscription_callback, ON_NEW_DATA
+        // &subscription_callback, ON_NEW_DATA
+        &subscription_callback, ALWAYS
+
     );
-    rclc_executor_add_timer(&executor, &timer);
+
 
     gpio_put(LED_PIN, 1);
     
     debug_msg.data = CONNECTED;
     rcl_publish(&debug_publisher, &debug_msg, NULL);
+
+
+    // rclc_executor_spin(&executor);
 
 
     /* -------- ROS INIT FINISHED --------- */
@@ -186,6 +198,7 @@ int main()
     int old_pulses = 0;
     while (true)
     {
+        rclc_executor_spin_some(&executor, 100);
         // debug_msg.data = RUNNING;
         // rcl_publish(&debug_publisher, &debug_msg, NULL);
 
