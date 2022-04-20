@@ -47,7 +47,7 @@ void backwards_DC_Motor(DC_Motor *motor, uint16_t speed);
 
     @param  motor   Motor's reference
 */
-void run_DC_MOTOR(DC_Motor *motor, int speed);
+void run_DC_Motor(DC_Motor *motor, int speed);
 
 
 /*!

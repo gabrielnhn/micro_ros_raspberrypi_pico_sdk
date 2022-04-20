@@ -22,7 +22,7 @@ void init_DC_Motor(DC_Motor *motor, uint8_t clockwise_pin,
     pwm_set_enabled(slice_num, 1);                          // Enable PWM
 }
 
-void run_DC_MOTOR(DC_Motor *motor, int speed)
+void run_DC_Motor(DC_Motor *motor, int speed)
 {
     if (speed > 0)
     {

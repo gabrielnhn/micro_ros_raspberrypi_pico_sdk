@@ -209,8 +209,8 @@ int main()
             encoder_msg.data = encoder_left_pulses;
             rcl_publish(&encoder_publisher, &encoder_msg, NULL);
         }
-        forward_DC_Motor(&left_motor, command.linear.x * 300);
-        forward_DC_Motor(&right_motor, command.linear.x * 300);
+        run_DC_Motor(&left_motor, command.linear.x * 300);
+        run_DC_Motor(&right_motor, command.linear.x * 300);
     }
 
     return 0;
