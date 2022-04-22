@@ -87,23 +87,21 @@ int main()
     char a;
     int i;
     stdio_init_all();
-    // while (true) {
-    //     i = 0;
-    //     // a = getchar_timeout_us(0);
-    //     a = getchar();
-    //     // while (a != '\n')
-    //     while (a != '\n' and a != PICO_ERROR_TIMEOUT)
-    //     {
-    //         buffer[i] = a;
-    //         a = getchar();
-    //         // a = getchar_timeout_us(1000);
-    //         i++;
-    //     }
-    //     buffer[i] = '\n';
+    while (true) {
+        i = 0;
+        a = getchar_timeout_us(0);
+        while ((a != '\xff') and (a != PICO_ERROR_TIMEOUT) and (a != '\n') and (i < 30))
+        {
+            buffer[i] = a;
+            i++;
+            a = getchar_timeout_us(0);
+        }
+        buffer[i] = '\n';
 
-    //     printf("buffer == %s!\n", buffer);
-    //     // usleep(1000);
-    // }
+        if ((i > 0) and (a != PICO_ERROR_TIMEOUT))
+            printf("buffer == %s!\n", buffer);
+    }
+
     // while(true)
     // {
     //     scanf("%s", buffer);
