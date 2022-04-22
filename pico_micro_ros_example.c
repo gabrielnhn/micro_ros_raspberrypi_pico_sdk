@@ -98,8 +98,11 @@ int main()
         }
         buffer[i] = '\n';
 
-        if ((i > 0) and (a != PICO_ERROR_TIMEOUT))
+        if ((a != '\xff'))
             printf("buffer == %s!\n", buffer);
+        else
+            printf("TIMEOUT\n", buffer);
+
     }
 
     // while(true)
