@@ -9,6 +9,7 @@
 #include <geometry_msgs/msg/twist.h>
 #include <rmw_microros/rmw_microros.h>
 #include "pico/stdlib.h"
+#include "pico/stdlib.h"
 #include "pico_uart_transports.h"
 #include "libdcmotor/DC_Motor.h"
 
@@ -71,8 +72,44 @@ void subscription_callback(const void * msgin)
     // rcl_ret_t ret = rcl_publish(&publisher, &command, NULL);
 }
 
+
+
+void serial_callback()
+{
+
+}
+
+
 int main()
 {
+    // STDIO SHIT:
+    char buffer[30];
+    char a;
+    int i;
+    stdio_init_all();
+    // while (true) {
+    //     i = 0;
+    //     // a = getchar_timeout_us(0);
+    //     a = getchar();
+    //     // while (a != '\n')
+    //     while (a != '\n' and a != PICO_ERROR_TIMEOUT)
+    //     {
+    //         buffer[i] = a;
+    //         a = getchar();
+    //         // a = getchar_timeout_us(1000);
+    //         i++;
+    //     }
+    //     buffer[i] = '\n';
+
+    //     printf("buffer == %s!\n", buffer);
+    //     // usleep(1000);
+    // }
+    // while(true)
+    // {
+    //     scanf("%s", buffer);
+    //     printf("Buffer is %s\n", buffer);
+    // }
+
     // micro-ROS connection setup
     rmw_uros_set_custom_transport(
 		true,
