@@ -13,12 +13,12 @@ int main()
     gpio_set_dir(LED_PIN, GPIO_OUT);
     gpio_put(LED_PIN, 1);
 
-    // init_DC_Motor(&left_motor, 6, 7, 8);
+    init_DC_Motor(&left_motor, 6, 7, 8);
     init_DC_Motor(&right_motor, 4, 3, 2);
 
     while(1)
     {
-        // forward_DC_Motor(&left_motor, 150);
+        forward_DC_Motor(&left_motor, 150);
         forward_DC_Motor(&right_motor, 150);
     }
 }
