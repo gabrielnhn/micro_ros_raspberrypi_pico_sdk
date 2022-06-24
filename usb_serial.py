@@ -5,7 +5,7 @@ print(ser.name)         # check which port was really used
 
 while True:
     
-    ser.write(b'140 20\n')     # write a string
+    ser.write(b'140 140\n')     # write a string
     # a = ser.read_until(b'\n')
 
     # print(a)

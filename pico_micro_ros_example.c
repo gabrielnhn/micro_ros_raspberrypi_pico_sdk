@@ -122,95 +122,9 @@ void check_serial()
 int main()
 {
     // STDIO SHIT:
-    // stdio_init_all();
+    stdio_init_all();
     
-
-    // micro-ROS connection setup
-    // rmw_uros_set_custom_transport(
-	// 	true,
-	// 	NULL,
-	// 	pico_serial_transport_open,
-	// 	pico_serial_transport_close,
-	// 	pico_serial_transport_write,
-	// 	pico_serial_transport_read
-	// );
-
-    // // set up LED GPIO
-    // gpio_init(LED_PIN);
-    // gpio_set_dir(LED_PIN, GPIO_OUT);
-
     // /* -------- ROS INIT --------- */
-
-    // // ROS memory allocator
-    // allocator = rcl_get_default_allocator();
-
-    // // Wait for micro-ROS agent successful ping for 2 minutes.
-    // const int timeout_ms = 1000; 
-    // const uint8_t attempts = 120;
-    // rcl_ret_t ret = rmw_uros_ping_agent(timeout_ms, attempts);
-    // if (ret != RCL_RET_OK)
-    // {
-    //     // Unreachable agent, exiting program.
-    //     return ret;
-    // }
-
-    // // Init ROS support structures
-    // rclc_support_init(&support, 0, NULL, &allocator);
-
-    // rclc_node_init_default(&node, "pico_node", "", &support);
-
-    // // PUBLISHERS
-
-    // // rclc_publisher_init_default(
-    // //     &publisher,
-    // //     &node,
-    // //     ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist),
-    // //     "pico_publisher"
-    // // );
-
-    // rclc_publisher_init_default(
-    //     &debug_publisher,
-    //     &node,
-    //     ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-    //     "pico_debug");
-
-    // rclc_publisher_init_default(
-    //     &encoder_publisher,
-    //     &node,
-    //     ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-    //     "encoder_position");
-
-
-    // // TIMER
-    // // rclc_timer_init_default(
-    // //     &timer,
-    // //     &support,
-    // //     RCL_MS_TO_NS(1000),
-    // //     my_timer_callback);
-
-    // // SUBSCRIPTIONS:
-
-    // rclc_executor_init(&executor, &support.context, 1, &allocator);
-
-    // rcl_ret_t rc = rclc_subscription_init_default(
-    //     &subscriber, &node,
-    //     ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist), "cmd_vel"
-    // );
-
-    // rc = rclc_executor_add_subscription(
-    //     &executor, &subscriber, &command,
-    //     // &subscription_callback, ON_NEW_DATA
-    //     &subscription_callback, ALWAYS
-
-    // );
-
-
-    
-    // debug_msg.data = CONNECTED;
-    // rcl_publish(&debug_publisher, &debug_msg, NULL);
-
-
-    // // rclc_executor_spin(&executor);
 
 
     /* -------- ROS INIT FINISHED --------- */
@@ -243,16 +157,16 @@ int main()
 //     gpio_set_dir(PIN_ENCODER_LEFT_B, GPIO_IN);
 
 //     int old_pulses = 0;
-//     while (true)
-//     {
-//         // rclc_executor_spin_some(&executor, 100);
-//         check_serial();
+    while (true)
+    {
+        // rclc_executor_spin_some(&executor, 100);
+        check_serial();
 
-//         run_DC_Motor(&left_motor, command_linear_x - command_angular_z);
-//         run_DC_Motor(&right_motor, command_linear_x + command_angular_z);
+        run_DC_Motor(&left_motor, command_linear_x - command_angular_z);
+        run_DC_Motor(&right_motor, command_linear_x + command_angular_z);
 
-//         sleep_ms(CHECK_INTERVAL);
-//     }
+        sleep_ms(CHECK_INTERVAL);
+    }
 
 //     return 0;
 // }
