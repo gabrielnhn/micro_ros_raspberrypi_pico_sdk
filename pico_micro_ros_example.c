@@ -134,17 +134,17 @@ int main()
     gpio_put(LED_PIN, 1);
 
     /* -------- MOTOR SETUP ------------- */
-    init_DC_Motor(&left_motor, 6, 7, 8);
+    init_DC_Motor(&left_motor, 6, 7, 9);
     init_DC_Motor(&right_motor, 4, 3, 2);
 
     /* -------- MOTOR TEST ------------- */
-    while(1)
-    {
+    // while(1)
+    // {
         // run_DC_Motor(&left_motor, 150);
         // run_DC_Motor(&right_motor, 150);
-        forward_DC_Motor(&left_motor, 150);
-        forward_DC_Motor(&right_motor, 150);
-    }
+        // forward_DC_Motor(&left_motor, 150);
+        // forward_DC_Motor(&right_motor, 150);
+    // }
 
     /* -------- ENCODER SETUP ------------- */
 
